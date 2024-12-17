@@ -1,0 +1,29 @@
+name: 'maven publish'
+description: 'An Action to publish artifact to maven central repo with Portal API'
+inputs:
+  artifact_path:
+    description: 'artifact local path'
+    required: true
+  portal_api_key:
+    description: 'Portal API key'
+    required: true
+  portal_api_password:
+    description: 'Portal API password'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.2.2
+      with:
+        repository: lynx-infra/maven-publish-action
+        path: maven-publish-action
+        ref: main
+    - name: publish
+      shell: bash
+      run: |
+        pushd $GITHUB_WORKSPACE/maven-publish-action
+        ls
+        chmod +x ./src/publish.sh
+        ./src/publish.sh "${{ inputs.portal_api_key }}" "${{ inputs.portal_api_password }}" "${{ inputs.artifact_path }}"
+        popd
