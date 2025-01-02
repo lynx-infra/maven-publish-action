@@ -1,14 +1,11 @@
 name: 'maven publish'
 description: 'An Action to publish artifact to maven central repo with Portal API'
 inputs:
-  artifact_path:
-    description: 'artifact local path'
+  artifact_path_list:
+    description: 'Artifact local path list. eg: ["./xxx/app-release.aar"]'
     required: true
-  portal_api_key:
-    description: 'Portal API key'
-    required: true
-  portal_api_password:
-    description: 'Portal API password'
+  portal_api_token:
+    description: 'Portal API token'
     required: true
 runs:
   using: "composite"
@@ -19,11 +16,21 @@ runs:
         repository: lynx-infra/maven-publish-action
         path: maven-publish-action
         ref: main
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+    - name: Install dependencies
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        pushd $GITHUB_WORKSPACE/maven-publish-action
+        pip install -r requirements.txt
+        popd
     - name: publish
       shell: bash
       run: |
         pushd $GITHUB_WORKSPACE/maven-publish-action
-        ls
-        chmod +x ./src/publish.sh
-        ./src/publish.sh "${{ inputs.portal_api_key }}" "${{ inputs.portal_api_password }}" "${{ inputs.artifact_path }}"
+        chmod +x ./src/publish.py
+        python3 ./src/publish.py '${{ inputs.portal_api_token }}' '${{ inputs.artifact_path_list }}'
         popd
