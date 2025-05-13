@@ -1,6 +1,7 @@
 
 import json
 import re
+import time
 import requests
 from retrying import retry
 import sys
@@ -92,6 +93,7 @@ if __name__ == "__main__":
             else:
                 print(f"Uploading {query_id_dict[query_id]} {status}")
         poll_count += 1
+        time.sleep(poll_interval)
     if query_status_dict:
         log_r(f"Error: upload timeout! UnFinished artifacts: {[query_id_dict[key] for key, _ in query_status_dict.items()]}")
         sys.exit(1)
@@ -117,6 +119,8 @@ if __name__ == "__main__":
                 sys.exit(1)
             else:
                 print(f"Publishing {query_id_dict[query_id]} {status}")
+        poll_count += 1
+        time.sleep(poll_interval)
     if query_status_dict:
         log_r(f"Error: publish timeout! UnFinished artifacts: {[query_id_dict[key] for key, _ in query_status_dict.items()]}")
         sys.exit(1)
