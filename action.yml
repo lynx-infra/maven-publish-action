@@ -23,6 +23,9 @@ runs:
     - name: Install dependencies
       shell: bash
       run: |
+        which python || where python
+        echo "$PATH"
+        sleep 3600
         python -m pip install --upgrade pip
         pushd $GITHUB_WORKSPACE/maven-publish-action
         pip install -r requirements.txt
