@@ -6,8 +6,8 @@ import requests
 from retrying import retry
 import sys
 
-PUBLISH_TIMEOUT = 1200
-UPLOAD_TIMEOUT = 60
+PUBLISH_TIMEOUT = 3600
+UPLOAD_TIMEOUT = 600
 UPLOADED_STATUS = "uploaded"
 VALIDATED_STATUS = "validated"
 FAILED_STATUS = "failed"
