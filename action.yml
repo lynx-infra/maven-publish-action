@@ -10,27 +10,23 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout code
-      uses: actions/checkout@v4.2.2
-      with:
-        repository: lynx-infra/maven-publish-action
-        path: maven-publish-action
-        ref: main
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
       with:
         python-version: '3.13'
     - name: Install dependencies
       shell: bash
       run: |
+        set -e
         python -m pip install --upgrade pip
-        pushd $GITHUB_WORKSPACE/maven-publish-action
+        pushd "$GITHUB_ACTION_PATH"
         pip install -r requirements.txt
         popd
     - name: publish
       shell: bash
       run: |
-        pushd $GITHUB_WORKSPACE/maven-publish-action
+        set -e
+        pushd "$GITHUB_ACTION_PATH"
         chmod +x ./src/publish.py
         python3 ./src/publish.py '${{ inputs.portal_api_token }}' '${{ inputs.artifact_path_list }}'
         popd
